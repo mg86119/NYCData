@@ -15,7 +15,7 @@ class SchoolDetailsViewModel {
     }
 
     func numberOfRows() -> Int {
-        return 5
+        return SchoolSATScore.allCases.count
     }
  
     func cellForRow(at index: Int) -> SchoolSATScore? {
@@ -25,23 +25,4 @@ class SchoolDetailsViewModel {
     func getSchoolDetails() -> SchoolDetails {
         return schoolDetails
     }
-//    func schoolName() -> String {
-//        return schoolDetails.schoolName
-//    }
-//
-//    func numberOfTestTakers() -> SatPair {
-//        return (name: NumberOfSATTestTakers, value: schoolDetails.numOfSatTestTakers)
-//    }
-//
-//    func criticalReadingScore() -> SatPair {
-//        return (name: CriticalReadingScore, value: schoolDetails.satCriticalReadingAvgScore)
-//    }
-//
-//    func mathScore() -> SatPair {
-//        return (name: MathAvgScore, value: schoolDetails.satMathAvgScore)
-//    }
-//
-//    func writingScore() -> SatPair {
-//        return (name: WritingAvgScore, value: schoolDetails.satWritingAvgScore)
-//    }
 }

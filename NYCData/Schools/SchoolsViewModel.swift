@@ -7,12 +7,18 @@
 
 import Foundation
 
+/// Enumeration to handle retry if network call fails
+enum LastNetworkCall {
+    case schools
+    case schoolDetails
+}
+
 /// Protocol for controller to know when to reload the table view or show error
 protocol SchoolsViewModelDelegate: AnyObject {
     func getSchoolsCallSuccess()
     func getSchoolsCallFailure(_ error: String)
-    func getSchoolsDetailsCallSuccess()
-    func getSchoolsDetailsCallFailure(_ error: String)
+    func getSchoolsDetailsCallSuccess(dbn: String)
+    func getSchoolsDetailsCallFailure(_ error: String, dbn: String)
 }
 
 /// View model for Schools view controller
@@ -27,8 +33,9 @@ class SchoolsViewModel {
 
     private var schools = [String: String]()
     private var schoolsDetails = [String: SchoolDetails]()
-
+ 
     weak var delegate: SchoolsViewModelDelegate?
+    var lastNetworkCall: LastNetworkCall = .schools
 
     // MARK: - Initializer
     init(delegate: SchoolsViewModelDelegate) {
@@ -39,6 +46,7 @@ class SchoolsViewModel {
 
     // MARK: - Schools Helper methods
     func getSchools() {
+        lastNetworkCall = .schools
         schoolsCall?.makeNetworkCall(urlString: SchoolsURL) { [weak self] result in
             guard let strongSelf = self else { return }
 
@@ -55,15 +63,20 @@ class SchoolsViewModel {
     }
 
     func numberOfSchools() -> Int {
-        return schools.values.count
+        return Array(schools.values).count
     }
 
     func schoolName(for row: Int) -> String {
         return Array(schools.values)[row]
     }
 
+    func selectedDBN(for row: Int) -> String {
+        return Array(schools.keys)[row]
+    }
+
     // MARK: - Schools Details Helper methods
-    func getSchoolsDetails() {
+    func getSchoolsDetails(dbn: String) {
+        lastNetworkCall = .schoolDetails
         schoolsDetailsCall?.makeNetworkCall(urlString: SchoolsDetailsURL) { [weak self] result in
             guard let strongSelf = self else { return }
 
@@ -72,9 +85,9 @@ class SchoolsViewModel {
                 schoolsDetails.forEach { detail in
                     strongSelf.schoolsDetails[detail.dbn] = detail
                 }
-                strongSelf.delegate?.getSchoolsDetailsCallSuccess()
+                strongSelf.delegate?.getSchoolsDetailsCallSuccess(dbn: dbn)
             case .failure(let error):
-                strongSelf.delegate?.getSchoolsDetailsCallFailure(error.localizedDescription)
+                strongSelf.delegate?.getSchoolsDetailsCallFailure(error.localizedDescription, dbn: dbn)
             }
         }
     }
@@ -83,7 +96,10 @@ class SchoolsViewModel {
         return !schoolsDetails.isEmpty
     }
 
-    func selectedSchoolDetails() -> SchoolDetails {
-        return SchoolDetails(dbn: "test", schoolName: "test", numOfSatTestTakers: "test", satCriticalReadingAvgScore: "test", satMathAvgScore: "test", satWritingAvgScore: "test")
+    func selectedSchoolDetails(dbn: String) -> SchoolDetails? {
+        guard schoolsDetails[dbn] != nil else { return nil }
+
+        let selectedSchoolDetails = schoolsDetails[dbn]
+        return selectedSchoolDetails
     }
 }
