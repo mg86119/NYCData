@@ -37,6 +37,9 @@ class SchoolsViewModel {
     weak var delegate: SchoolsViewModelDelegate?
     var lastNetworkCall: LastNetworkCall = .schools
 
+    /// This is for unit tests and can be used for offline data
+    var useMockData: Bool = false
+
     // MARK: - Initializer
     init(delegate: SchoolsViewModelDelegate) {
         self.delegate = delegate
@@ -46,7 +49,20 @@ class SchoolsViewModel {
 
     // MARK: - Schools Helper methods
     func getSchools() {
+        // set last network call
         lastNetworkCall = .schools
+
+        // mock data
+        guard !useMockData else {
+            if let schls = getMockSchools() {
+                schls.forEach { val in
+                    schools[val.dbn] = val.schoolName
+                }
+            }
+            return
+        }
+
+        // actual network call
         schoolsCall?.makeNetworkCall(urlString: SchoolsURL) { [weak self] result in
             guard let strongSelf = self else { return }
 
@@ -76,7 +92,20 @@ class SchoolsViewModel {
 
     // MARK: - Schools Details Helper methods
     func getSchoolsDetails(dbn: String) {
+        // set last network call
         lastNetworkCall = .schoolDetails
+
+        // mock data
+        guard !useMockData else {
+            if let schls = getMockSchoolDetails() {
+                schls.forEach { detail in
+                    schoolsDetails[detail.dbn] = detail
+                }
+            }
+            return
+        }
+
+        // actual network call
         schoolsDetailsCall?.makeNetworkCall(urlString: SchoolsDetailsURL) { [weak self] result in
             guard let strongSelf = self else { return }
 
@@ -101,5 +130,42 @@ class SchoolsViewModel {
 
         let selectedSchoolDetails = schoolsDetails[dbn]
         return selectedSchoolDetails
+    }
+}
+
+// MARK: - Mock Data Setup
+extension SchoolsViewModel {
+    func getMockSchools() -> [Schools]? {
+        let bundle = Bundle(for: type(of: self))
+
+        guard let url = bundle.url(forResource: "Schools", withExtension: "json") else {
+            return nil
+        }
+
+        do {
+            let json = try Data(contentsOf: url)
+            let schools = try JSONDecoder().decode([Schools].self, from: json)
+            return schools
+        } catch _ {
+            /// Print or log the error  for trouble shooting purpose
+            return nil
+        }
+    }
+
+    func getMockSchoolDetails() -> [SchoolDetails]? {
+        let bundle = Bundle(for: type(of: self))
+
+        guard let url = bundle.url(forResource: "SchoolDetails", withExtension: "json") else {
+            return nil
+        }
+
+        do {
+            let json = try Data(contentsOf: url)
+            let schoolDetails = try JSONDecoder().decode([SchoolDetails].self, from: json)
+            return schoolDetails
+        } catch _ {
+            /// Print or log the error  for trouble shooting purpose
+            return nil
+        }
     }
 }
