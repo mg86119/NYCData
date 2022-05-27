@@ -21,6 +21,8 @@
 		8147F697284050D40005859C /* Schools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8147F696284050D40005859C /* Schools.swift */; };
 		8147F69A284078990005859C /* SchoolDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8147F699284078990005859C /* SchoolDetailsViewController.swift */; };
 		8147F69C28407AB00005859C /* SchoolDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8147F69B28407AB00005859C /* SchoolDetailsViewModel.swift */; };
+		8147F69E284147770005859C /* ShoolDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8147F69D284147760005859C /* ShoolDetails.swift */; };
+		8147F6A0284178440005859C /* SchoolSATScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8147F69F284178440005859C /* SchoolSATScore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		8147F696284050D40005859C /* Schools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schools.swift; sourceTree = "<group>"; };
 		8147F699284078990005859C /* SchoolDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolDetailsViewController.swift; sourceTree = "<group>"; };
 		8147F69B28407AB00005859C /* SchoolDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolDetailsViewModel.swift; sourceTree = "<group>"; };
+		8147F69D284147760005859C /* ShoolDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoolDetails.swift; sourceTree = "<group>"; };
+		8147F69F284178440005859C /* SchoolSATScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSATScore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				8147F696284050D40005859C /* Schools.swift */,
+				8147F69D284147760005859C /* ShoolDetails.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -170,6 +175,7 @@
 			children = (
 				8147F699284078990005859C /* SchoolDetailsViewController.swift */,
 				8147F69B28407AB00005859C /* SchoolDetailsViewModel.swift */,
+				8147F69F284178440005859C /* SchoolSATScore.swift */,
 			);
 			path = "School Details";
 			sourceTree = "<group>";
@@ -305,8 +311,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8147F69E284147770005859C /* ShoolDetails.swift in Sources */,
 				8147F69A284078990005859C /* SchoolDetailsViewController.swift in Sources */,
 				8147F69C28407AB00005859C /* SchoolDetailsViewModel.swift in Sources */,
+				8147F6A0284178440005859C /* SchoolSATScore.swift in Sources */,
 				8147F69428404C240005859C /* NetworkingService.swift in Sources */,
 				8147F697284050D40005859C /* Schools.swift in Sources */,
 				8147F69128404A7A0005859C /* SchoolsViewModel.swift in Sources */,

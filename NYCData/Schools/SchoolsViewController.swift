@@ -15,9 +15,10 @@ class SchoolsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView?
 
-    private let CellIdentifier = "SchoolsCell"
     /// I want to declare all the strings in a localized file to support multiple languages
+    private let CellIdentifier = "SchoolsCell"
     private let SchoolsTitle = "NYC High Schools"
+    private let DetailsSegue = "SchoolDetails"
 
     private var viewModel: SchoolsViewModel?
 
@@ -41,6 +42,15 @@ class SchoolsViewController: UIViewController {
         viewModel?.getSchools()
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if let destination = segue.destination as? SchoolDetailsViewController,
+            let data = sender as? SchoolDetailsViewModel {
+            destination.setViewModel(data)
+        }
+    }
+
     // MARK: - Helper Methods
     fileprivate func showLoading(_ loading: Bool) {
         loading ? loadingIndicator?.startAnimating() : loadingIndicator?.stopAnimating()
@@ -49,6 +59,22 @@ class SchoolsViewController: UIViewController {
     fileprivate func retry() {
         showLoading(true)
         viewModel?.getSchools()
+    }
+
+    fileprivate func showGenericError() {
+        /// TODO: Have a custom wrapper around UIAlertController to take care of all alerts
+
+        /// Show Alert that there is some network issue
+        /// Given more time, Declare the strings in a seperate constant file
+        let alert = UIAlertController(title: "OOPS", message: "Something went wrong. Please try again.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Retry", style: .default, handler: {
+            [weak self] action in
+            self?.retry()
+        })
+        alert.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -71,30 +97,45 @@ extension SchoolsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.contentConfiguration = content
         return cell
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let viewModel = viewModel else { return }
+
+        if viewModel.areSchoolsDetailsLoaded() {
+            let detailsViewModel = SchoolDetailsViewModel(scoolDetails: viewModel.selectedSchoolDetails())
+            performSegue(withIdentifier: DetailsSegue, sender: detailsViewModel)
+        } else {
+            showLoading(true)
+            /// Instead of making this network call always when the user clicks
+            /// on school name. As network response is returning all the school's SAT score.
+            /// I have decided make one time call and save the response to use it further
+            /// This approach may not work if the data changes or if we need to get latest data
+            viewModel.getSchoolsDetails()
+        }
+    }
 }
 
 // MARK: - SchoolsViewModelDelegate
 extension SchoolsViewController: SchoolsViewModelDelegate {
-    func isSucess() {
+    func getSchoolsCallSuccess() {
         showLoading(false)
         tableView?.reloadData()
     }
     
-    func isError(_ error: String) {
+    func getSchoolsCallFailure(_ error: String) {
         showLoading(false)
+        showGenericError()
+    }
 
-        /// TODO: Have a custom wrapper around UIAlertController to take care of all alerts
+    func getSchoolsDetailsCallSuccess() {
+        showLoading(false)
+        guard let viewModel = viewModel else { return }
+        let detailsViewModel = SchoolDetailsViewModel(scoolDetails: viewModel.selectedSchoolDetails())
+        performSegue(withIdentifier: DetailsSegue, sender: detailsViewModel)
+    }
 
-        /// Show Alert that there is some network issue
-        /// Given more time, Declare the strings in a seperate constant file
-        let alert = UIAlertController(title: "OOPS", message: "Something went wrong. Please try again.", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "Retry", style: .default, handler: {
-            [weak self] action in
-            self?.retry()
-        })
-        alert.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
-        alert.addAction(cancelAction)
-        self.present(alert, animated: true, completion: nil)
+    func getSchoolsDetailsCallFailure(_ error: String) {
+        showLoading(false)
+        showGenericError()
     }
 }
