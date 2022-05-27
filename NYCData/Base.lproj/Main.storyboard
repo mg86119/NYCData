@@ -30,18 +30,24 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="pM0-4V-N58">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="pM0-4V-N58" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="17J-cT-0Wm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GhU-Wv-BmR" secondAttribute="trailing" id="4fA-1P-kdO"/>
                             <constraint firstItem="GhU-Wv-BmR" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="EUe-6Q-3c2"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="GhU-Wv-BmR" secondAttribute="bottom" id="MI9-r0-Fyw"/>
+                            <constraint firstItem="pM0-4V-N58" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="fjj-sq-L23"/>
                             <constraint firstItem="GhU-Wv-BmR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="utp-E7-o7u"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="lIQ-KV-HKW"/>
                     <connections>
+                        <outlet property="loadingIndicator" destination="pM0-4V-N58" id="K3G-wI-8TR"/>
                         <outlet property="tableView" destination="GhU-Wv-BmR" id="VsE-MQ-K7o"/>
                     </connections>
                 </viewController>

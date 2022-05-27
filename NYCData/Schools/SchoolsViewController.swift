@@ -10,6 +10,7 @@ import UIKit
 
 class SchoolsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView?
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView?
 
     private let CellIdentifier = "SchoolsCell"
     private let SchoolsTitle = "Schools"
@@ -17,10 +18,29 @@ class SchoolsViewController: UIViewController {
     private var viewModel: SchoolsViewModel?
 
     override func viewDidLoad() {
+        // Set title
         navigationItem.title = SchoolsTitle
+
+        // Set table viewe delegate and data source
         tableView?.delegate = self
         tableView?.dataSource = self
-        viewModel = SchoolsViewModel()
+
+        // Initialize view model
+        viewModel = SchoolsViewModel(delegate: self)
+
+        // Show loading spinner
+        showLoading(true)
+
+        // Make network call
+        viewModel?.getSchools()
+    }
+
+    fileprivate func showLoading(_ loading: Bool) {
+        loading ? loadingIndicator?.startAnimating() : loadingIndicator?.stopAnimating()
+    }
+
+    fileprivate func retry() {
+        showLoading(true)
         viewModel?.getSchools()
     }
 }
@@ -42,5 +62,29 @@ extension SchoolsViewController: UITableViewDelegate, UITableViewDataSource {
         content.text = viewModel.schoolName(for: indexPath.row)
         cell.contentConfiguration = content
         return cell
+    }
+}
+
+extension SchoolsViewController: SchoolsViewModelDelegate {
+    func isSucess() {
+        showLoading(false)
+        tableView?.reloadData()
+    }
+    
+    func isError(_ error: String) {
+        showLoading(false)
+
+        // TODO: Have a custom wrapper around UIAlertController to take care of all alerts
+
+        // Show Alert that there is some network issue
+        let alert = UIAlertController(title: "OOPS", message: "Something went wrong. Please try again.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Retry", style: .default, handler: {
+            [weak self] action in
+            self?.retry()
+        })
+        alert.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Okay", style: .cancel, handler: nil)
+        alert.addAction(cancelAction)
+        self.present(alert, animated: true, completion: nil)
     }
 }

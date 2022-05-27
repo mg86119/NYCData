@@ -7,12 +7,15 @@
 
 import Foundation
 
+/// Custom error type to handle all network errors
 enum NYCDataError: Error {
     case JsonError
     case InvalidURL
     case Unknown
 }
 
+/// Generic networking class
+/// As of now, It only handles Response but we can similarily add `RequestT`
 class Networking<ResponseT>: NSObject where ResponseT: Codable {
 
     typealias Handler = (Result<ResponseT, NYCDataError>) -> Void
@@ -31,16 +34,22 @@ class Networking<ResponseT>: NSObject where ResponseT: Codable {
 
         task = URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else {
-                completion(.failure(.Unknown))
+                DispatchQueue.main.async {
+                    completion(.failure(.Unknown))
+                }
                 return
             }
 
             guard let schools = try? JSONDecoder().decode(ResponseT.self, from: data) else {
-                completion(.failure(.JsonError))
+                DispatchQueue.main.async {
+                    completion(.failure(.JsonError))
+                }
                 return
             }
-            
-            completion(.success(schools))
+
+            DispatchQueue.main.async {
+                completion(.success(schools))
+            }
         }
         task?.resume()
     }
