@@ -7,11 +7,15 @@
 
 import Foundation
 
+/// Protocol for controller to know when to reload the table view or show error
 protocol SchoolsViewModelDelegate: AnyObject {
     func isSucess()
     func isError(_ error: String)
 }
 
+/// View model for Schools view controller
+/// Ideally I want to have all the networking end points in one single file but due to time conerns
+/// I have added the end piont in this class itself
 class SchoolsViewModel {
     private let SchoolsURL = "https://data.cityofnewyork.us/resource/s3k6-pzi2.json"
 
