@@ -32,6 +32,7 @@ class SchoolsViewModel {
     private var schoolsDetailsCall: Networking<[SchoolDetails]>?
 
     private var schools = [String: String]()
+    private var filteredSchools = [String: String]()
     private var schoolsDetails = [String: SchoolDetails]()
  
     weak var delegate: SchoolsViewModelDelegate?
@@ -79,15 +80,27 @@ class SchoolsViewModel {
     }
 
     func numberOfSchools() -> Int {
-        return Array(schools.values).count
+        return Array(filteredSchools.values).count
     }
 
     func schoolName(for row: Int) -> String {
-        return Array(schools.values)[row]
+        return Array(filteredSchools.values)[row]
     }
 
     func selectedDBN(for row: Int) -> String {
-        return Array(schools.keys)[row]
+        return Array(filteredSchools.keys)[row]
+    }
+
+    func getAllSchools() -> [String: String] {
+        return schools
+    }
+
+    func setFilteredSchools(schools: [String: String]) {
+        filteredSchools = schools
+    }
+
+    func appendFilteredSchool(school: (key: String, value: String)) {
+        filteredSchools[school.key] = school.value
     }
 
     // MARK: - Schools Details Helper methods

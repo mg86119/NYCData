@@ -16,8 +16,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <searchBar contentMode="redraw" placeholder="Search school name" translatesAutoresizingMaskIntoConstraints="NO" id="Tqy-nz-8s7">
+                                <rect key="frame" x="0.0" y="88" width="414" height="51"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="GhU-Wv-BmR">
-                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <rect key="frame" x="0.0" y="139" width="414" height="723"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SchoolsCell" id="kef-Wb-7Vd">
@@ -39,15 +43,19 @@
                         <constraints>
                             <constraint firstItem="pM0-4V-N58" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="17J-cT-0Wm"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="GhU-Wv-BmR" secondAttribute="trailing" id="4fA-1P-kdO"/>
-                            <constraint firstItem="GhU-Wv-BmR" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="EUe-6Q-3c2"/>
+                            <constraint firstItem="Tqy-nz-8s7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="722-Fw-ygZ"/>
+                            <constraint firstItem="Tqy-nz-8s7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Hdw-26-9DX"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="GhU-Wv-BmR" secondAttribute="bottom" id="MI9-r0-Fyw"/>
+                            <constraint firstItem="GhU-Wv-BmR" firstAttribute="top" secondItem="Tqy-nz-8s7" secondAttribute="bottom" id="RcN-S4-787"/>
                             <constraint firstItem="pM0-4V-N58" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="fjj-sq-L23"/>
+                            <constraint firstItem="Tqy-nz-8s7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="pzf-kn-6Sl"/>
                             <constraint firstItem="GhU-Wv-BmR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="utp-E7-o7u"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="lIQ-KV-HKW"/>
                     <connections>
                         <outlet property="loadingIndicator" destination="pM0-4V-N58" id="K3G-wI-8TR"/>
+                        <outlet property="searchBar" destination="Tqy-nz-8s7" id="fvA-EM-ftc"/>
                         <outlet property="tableView" destination="GhU-Wv-BmR" id="VsE-MQ-K7o"/>
                         <segue destination="LYH-uH-Bx7" kind="show" identifier="SchoolDetails" id="PO0-eL-rff"/>
                     </connections>

@@ -8,12 +8,12 @@
 import Foundation
 import UIKit
 
-/// If given more time, I want to add `search box` on top of the table view for easy search of the
-/// school name as the number of shools are too many.
-/// Also, pull to refresh is nice to have for this app to get latest data
+/// If given more time,
+/// want to add pull to refresh and sorting
 class SchoolsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView?
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView?
+    @IBOutlet weak var searchBar: UISearchBar?
 
     /// I want to declare all the strings in a localized file to support multiple languages
     private let CellIdentifier = "SchoolsCell"
@@ -28,9 +28,13 @@ class SchoolsViewController: UIViewController {
         /// Set title
         navigationItem.title = SchoolsTitle
 
-        /// Set table viewe delegate and data source
+        /// Set table view delegate and data source
         tableView?.delegate = self
         tableView?.dataSource = self
+
+        /// Set search bar delegate
+        searchBar?.delegate = self
+        searchBar?.showsCancelButton = false
 
         /// Initialize view model
         viewModel = SchoolsViewModel(delegate: self)
@@ -157,7 +161,9 @@ extension SchoolsViewController: UITableViewDelegate,
 // MARK: - SchoolsViewModelDelegate
 extension SchoolsViewController: SchoolsViewModelDelegate {
     func getSchoolsCallSuccess() {
+        guard let viewModel = viewModel else { return }
         showLoading(false)
+        viewModel.setFilteredSchools(schools: viewModel.getAllSchools())
         tableView?.reloadData()
     }
     
@@ -179,5 +185,28 @@ extension SchoolsViewController: SchoolsViewModelDelegate {
     func getSchoolsDetailsCallFailure(_ error: String, dbn: String) {
         showLoading(false)
         showGenericError(dbn: dbn)
+    }
+}
+
+extension SchoolsViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let viewModel = viewModel else { return }
+
+        // Reset filtered schools first
+        viewModel.setFilteredSchools(schools: [:])
+
+        if searchText.count > 0 {
+            searchBar.showsCancelButton = true
+            let allSchools = viewModel.getAllSchools()
+            for school in allSchools {
+                if school.value.lowercased().contains(searchText.lowercased()) {
+                    viewModel.appendFilteredSchool(school: (school.key, school.value))
+                }
+            }
+        } else {
+            searchBar.showsCancelButton = false
+            viewModel.setFilteredSchools(schools: viewModel.getAllSchools())
+        }
+        tableView?.reloadData()
     }
 }
